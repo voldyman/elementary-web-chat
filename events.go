@@ -22,8 +22,8 @@ type (
 	}
 
 	MessageData struct {
-		Sender  string `json: sender`
-		Message string `json: message`
+		Sender  string `json:"sender"`
+		Message string `json:"message"`
 	}
 
 	MessageRequestData struct {

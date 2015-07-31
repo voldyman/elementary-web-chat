@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -28,6 +28,8 @@ func main() {
 	http.Handle("/", http.FileServer(http.Dir("./client/")))
 	http.HandleFunc("/chat", chatHandler)
 
+	log.Printf("Starting server on port '%s'", port)
+
 	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		panic("ListenAndServe: " + err.Error())
@@ -46,7 +48,7 @@ func chatHandler(w http.ResponseWriter, r *http.Request) {
 		"Sec-websocket-Protocol": websocket.Subprotocols(r),
 	})
 	if err != nil {
-		fmt.Println("Error Upgrading: ", err.Error())
+		log.Println("Error Upgrading: ", err.Error())
 		return
 	}
 

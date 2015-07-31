@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/gorilla/websocket"
 )
@@ -93,7 +94,7 @@ func (c *Client) handleLogin(msg json.RawMessage) {
 		response.ErrorCode = AlreadyLoggedIn
 		response.Message = "Already Logged In"
 		c.sendEvent("error", false, response)
-		fmt.Println("Error parsing message event")
+		log.Println("Error parsing message event")
 		return
 	}
 	if c.server.IsNickAvailable(loginData.Nick) {
@@ -105,7 +106,7 @@ func (c *Client) handleLogin(msg json.RawMessage) {
 		response.ErrorCode = NickNotAvail
 		response.Message = "The Nick has already been taken"
 		c.sendEvent("error", false, response)
-		fmt.Println("Nick Collision")
+		log.Println("Nick Collision")
 	}
 
 	return
@@ -124,7 +125,7 @@ func (c *Client) handleMessage(msg json.RawMessage) {
 		response.ErrorCode = ErrorParsing
 		response.Message = "Unable to parse message"
 		c.sendEvent("error", false, response)
-		fmt.Println("Error parsing message event")
+		log.Println("Error parsing message event")
 		return
 	}
 
@@ -135,7 +136,7 @@ func (c *Client) handleMessage(msg json.RawMessage) {
 		response.ErrorCode = NotLoggedIn
 		response.Message = "You are not logged in"
 		c.sendEvent("error", false, response)
-		fmt.Println("User not logged in, sending messages")
+		log.Println("User not logged in, sending messages")
 	}
 
 	fmt.Println(mData.Message)

@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gorilla/websocket"
+	"github.com/spf13/viper"
 )
 
 var upgrader = websocket.Upgrader{
@@ -18,10 +18,9 @@ var (
 )
 
 func main() {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8081"
-	}
+	initializeConfig()
+
+	port := viper.GetString("port")
 
 	server = NewServer()
 
@@ -55,4 +54,15 @@ func chatHandler(w http.ResponseWriter, r *http.Request) {
 	cli := NewClient(server, ws)
 
 	cli.Handle()
+}
+
+func initializeConfig() {
+	viper.SetDefault("port", 8081)
+
+	viper.SetConfigName("config")
+	viper.AddConfigPath("./")
+	err := viper.ReadInConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
 }

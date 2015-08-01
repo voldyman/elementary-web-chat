@@ -2,7 +2,7 @@
 
 This is supposed to be a web chat server for the elementary website.
 
-it is currently is not production ready, you have been warned.
+This code is not production ready. Use at your own risk. You have been warned.
 
 
 ###Author 

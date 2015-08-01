@@ -59,10 +59,11 @@ func chatHandler(w http.ResponseWriter, r *http.Request) {
 func initializeConfig() {
 	viper.SetDefault("port", 8081)
 
+	viper.SetConfigType("json")
 	viper.SetConfigName("config")
 	viper.AddConfigPath("./")
 	err := viper.ReadInConfig()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("No configuration file found, using defaults.")
 	}
 }

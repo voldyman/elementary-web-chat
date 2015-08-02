@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
-	"os"
 
 	"github.com/gorilla/websocket"
+	"github.com/spf13/viper"
 )
 
 var upgrader = websocket.Upgrader{
@@ -18,15 +18,16 @@ var (
 )
 
 func main() {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8081"
-	}
+	initializeConfig()
+
+	port := viper.GetString("port")
 
 	server = NewServer()
 
 	http.Handle("/", http.FileServer(http.Dir("./client/")))
 	http.HandleFunc("/chat", chatHandler)
+
+	log.Printf("Starting server on port '%s'", port)
 
 	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
@@ -46,11 +47,23 @@ func chatHandler(w http.ResponseWriter, r *http.Request) {
 		"Sec-websocket-Protocol": websocket.Subprotocols(r),
 	})
 	if err != nil {
-		fmt.Println("Error Upgrading: ", err.Error())
+		log.Println("Error Upgrading: ", err.Error())
 		return
 	}
 
 	cli := NewClient(server, ws)
 
 	cli.Handle()
+}
+
+func initializeConfig() {
+	viper.SetDefault("port", 8081)
+
+	viper.SetConfigType("json")
+	viper.SetConfigName("config")
+	viper.AddConfigPath("./")
+	err := viper.ReadInConfig()
+	if err != nil {
+		log.Println("No configuration file found, using defaults.")
+	}
 }
